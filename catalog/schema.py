@@ -10,7 +10,7 @@ import boto3
 import uuid
 
 # AWS S3 "constants"
-S3_BASE_URL = 'https://s3-us-east-1.amazonaws.com/'
+S3_BASE_URL = 's3.amazonaws.com' 
 BUCKET = 'libby-app'
 
 class BookNode(DjangoObjectType):
@@ -57,7 +57,7 @@ class BookImageMutation(Mutation):
                 # build the full url string
                 # url has to be unique, 
                 # otherwise we risk overwriting existing files.
-                url = f"{S3_BASE_URL}{BUCKET}/books/{book_id}/{key}"
+                url = f"https://{BUCKET}.{S3_BASE_URL}/{key}"
                 # we can assign to book_id or book (if you have a book object)
                 photo = BookImage(url=url, book_id=book_id)
                 photo.save()
