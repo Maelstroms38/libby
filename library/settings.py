@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'reviews'
 ]
 
+LOGIN_URL = '/admin/'
+LOGIN_REDIRECT_URL = 'graphql'
+
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',

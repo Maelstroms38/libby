@@ -13,6 +13,10 @@ import uuid
 S3_BASE_URL = 's3.amazonaws.com' 
 BUCKET = 'libby-app'
 
+class BookImageNode(DjangoObjectType):
+    class Meta:
+        model = BookImage
+
 class BookNode(DjangoObjectType):
     class Meta:
         model = Book

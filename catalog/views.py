@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.conf import settings
 
 # Create your views here.
 
@@ -7,6 +8,12 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from graphene_file_upload.django import FileUploadGraphQLView
 from rest_framework import generics
+
+def redirect_view(request):
+    if request.user.is_authenticated:
+        return redirect("/graphql")
+    else:
+        return redirect("/api")
 
 class TokenLoginRequiredMixin(mixins.LoginRequiredMixin):
 
