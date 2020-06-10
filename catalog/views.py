@@ -1,42 +1,29 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
+from catalog.models import Book, Author, BookImage
+from reviews.models import Review
 
 # Create your views here.
 
-from django.contrib.auth import mixins
-from rest_framework.authentication import SessionAuthentication
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from graphene_file_upload.django import FileUploadGraphQLView
-from rest_framework import generics
+def index(request):
+    """View function for home page of site."""
+    books = Book.objects.all()
+    authors = Author.objects.all()
+    reviews = Review.objects.all()
+    images = BookImage.objects.all()
 
-def redirect_view(request):
-    if request.user.is_authenticated:
-        return redirect("/graphql")
-    else:
-        return redirect("/api")
+    for book in books:
+        image = BookImage.objects.filter(book=book).first()
+        if image:
+            book.image = image
 
-class TokenLoginRequiredMixin(mixins.LoginRequiredMixin):
+    context = {
+        'books': books,
+        'books_count': books.count(),
+        'authors_count': authors.count(),
+        'reviews_count': reviews.count(),
+        'images_count': images.count(),
+    }
 
-    """A login required mixin that allows token authentication."""
-
-    def dispatch(self, request, *args, **kwargs):
-        """If token was provided, ignore authenticated status."""
-        http_auth = request.META.get("HTTP_AUTHORIZATION")
-
-        if http_auth and "JWT" in http_auth:
-            pass
-          
-        elif not request.user.is_authenticated:
-            return self.handle_no_permission()
-
-        return super(mixins.LoginRequiredMixin, self).dispatch(
-            request, *args, **kwargs)
-      
-class PrivateGraphQLView(TokenLoginRequiredMixin, FileUploadGraphQLView):
-
-    """This view supports both token and session authentication."""
-    
-    authentication_classes = [
-        SessionAuthentication,
-        JSONWebTokenAuthentication,
-        ]
+    # Render the HTML template index.html with the data in the context variable
+    return render(request, 'index.html', context=context)
